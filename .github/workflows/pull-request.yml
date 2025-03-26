@@ -1,0 +1,69 @@
+# Workflow names are optional, but should be provided.
+# They are displayed on GitHub when the action is run.
+name:  GH Actions Workshop ✨
+
+# The `on` property configures the events that will trigger the workflow.
+# In our case we want it to run when the `pull_request` event is triggered.
+# In short, that means that the workflow will run when a pull request is
+# either opened or updated (but not renamed or labeled – code needs to
+# be changed).
+on:
+  - pull_request
+
+# Jobs are what actually do the work. We can add as many jobs as we want.
+# These will be run in parallel.
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        # To reference external workflows, we use the `uses` keyword.
+        # The thing after the `@` is the version of the workflow, and
+        # references a Git tag.
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        # To reference external workflows, we use the `uses` keyword.
+        # The thing after the `@` is the version of the workflow, and
+        # references a Git tag.
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: vitest run
+        run: npm run test
+  linting:
+    name: linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        # To reference external workflows, we use the `uses` keyword.
+        # The thing after the `@` is the version of the workflow, and
+        # references a Git tag.
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: lint check 
+        run: npm run lint:check
+  post-comment:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    needs: [build, test, linting]
+    
+    steps:
+      - name: Post comment
+        uses: peter-evans/create-or-update-comment@v4
+        with: 
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            All jobs have finished! 🎉
