@@ -26,5 +26,11 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: vitest run
+        run: npm run vitest run
     
 
