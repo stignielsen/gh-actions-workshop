@@ -28,6 +28,8 @@ jobs:
       - name: Print message to terminal
         run: echo "Hello 🌏!"
   build:
+    name: Build
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         # To reference external workflows, we use the `uses` keyword.
