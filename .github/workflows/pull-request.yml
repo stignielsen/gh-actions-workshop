@@ -54,7 +54,12 @@ jobs:
         run: npm run lint:check
   post-comment:
     runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
     needs: [build, test, linting]
+    
     steps:
       - name: Post comment
         uses: peter-evans/create-or-update-comment@v4
